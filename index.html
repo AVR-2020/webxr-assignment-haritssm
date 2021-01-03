@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <title>Final Project Individu RVA</title>
+        <script src="https://aframe.io/releases/1.1.0/aframe.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/gh/n5ro/aframe-physics-system@v4.0.1/dist/aframe-physics-system.min.js"></script>
+        <script src="https://unpkg.com/aframe-environment-component@1.1.0/dist/aframe-environment-component.min.js"></script>
+        <script src="https://unpkg.com/super-hands/dist/super-hands.min.js"></script>
+        <script>
+            // forward mouse and touch events to the super-hands entity
+            AFRAME.registerComponent("capture-mouse", {
+                init: function () {
+                    this.eventRepeater = this.eventRepeater.bind(this);
+                    this.el.sceneEl.addEventListener(
+                        "loaded",
+                        () => {
+                            this.el.sceneEl.canvas.addEventListener(
+                                "mousedown",
+                                this.eventRepeater
+                            );
+                            this.el.sceneEl.canvas.addEventListener(
+                                "mouseup",
+                                this.eventRepeater
+                            );
+                            this.el.sceneEl.canvas.addEventListener(
+                                "touchstart",
+                                this.eventRepeater
+                            );
+                            this.el.sceneEl.canvas.addEventListener(
+                                "touchmove",
+                                this.eventRepeater
+                            );
+                            this.el.sceneEl.canvas.addEventListener(
+                                "touchend",
+                                this.eventRepeater
+                            );
+                        },
+                        { once: true }
+                    );
+                },
+                eventRepeater: function (evt) {
+                    if (evt.type.startsWith("touch")) {
+                        evt.preventDefault();
+                        // avoid repeating touchmove because it interferes with look-controls
+                        if (evt.type === "touchmove") {
+                        return;
+                        }
+                    }
+                    this.el.emit(evt.type, evt.detail);
+                },
+            });
+        </script>
+    </head>
+
+    <body>
+        <a-scene physics="iterations: 30" cursor="rayOrigin: mouse">
+            <!-- camera -->
+            <a-entity  camera 
+                       look-controls
+                       wasd-controls 
+                       position="0 7 15"
+                       capture-mouse
+                       raycaster
+                       cursor="rayOrigin:mouse"
+                       body="type: static; shape: sphere; sphereRadius: 0.001"
+                       super-hands="colliderEvent: raycaster-intersection; colliderEventProperty: els; colliderEndEvent:raycaster-intersection-cleared; colliderEndEventProperty: clearedEls;">
+            </a-entity>
+
+            <!-- environment -->
+            <a-entity environment="preset: default"
+                      ground="flat">
+            </a-entity>
+
+            <!-- ground -->
+            <a-plane position="0 0.5 0" width="100" height="100" color="black" rotation="-90 0 0" visible="false" static-body>
+            </a-plane>
+
+            <!-- upper ground -->
+            <a-box position="0 2 -20" rotation="0 0 0" width="12" height="1" depth="45" color="#0284FE" static-body></a-box>
+
+            <!-- gaurdrail left -->
+	        <a-box position="-8 2.7 -15" rotation="0 0 0" width="0.5" height="0.5" depth="50" color="#00008b" static-body></a-box>
+    
+            <!-- gaurdrail right -->
+            <a-box position="8 2.7 -15" rotation="0 0 0" width="0.5" height="0.5" depth="50" color="#00008b" static-body></a-box>
+
+            <!-- bowling ball -->
+            <a-gltf-model
+                src="assets/bowling_ball/scene.gltf"
+                grabbable
+                droppable
+                draggable="mouse"
+                position="0 5 10"
+                scale="7 7 7"
+                dynamic-body="mass: 100; shape:sphere">
+            </a-gltf-model>
+
+            <!-- pins -->
+            <!-- row 1 pins -->
+            <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="0 5 -30" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+            <!-- row 2 pins -->
+            <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="-1.5 5 -32" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+            <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="1.5 5 -32" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+            <!-- row 3 pins -->
+            <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="0 5 -34" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+	        <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="-3 5 -34" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+	        <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="3 5 -34" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+            <!-- row 4 pins -->
+            <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="-4.5 5 -36" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+	        <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="-1.5 5 -36" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+	        <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="1.5 5 -36" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+            <a-cylinder src="assets/bowling-pin/textures/18924_pin.jpeg" position="4.5 5 -36" rotation="0 0 0" height="5" radius="0.5" color="#FBFBF8" dynamic-body></a-cylinder>
+        </a-scene>
+    </body>
+</html>
